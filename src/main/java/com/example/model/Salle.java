@@ -9,16 +9,16 @@ public class Salle {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long idS;
 
     @Column(nullable = false)
-    private String nom;
+    private String nomS;
 
     @Column(nullable = false)
-    private int capacite;
+    private int capaciteS;
 
-    @OneToMany(mappedBy = "salle", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Reservation> reservations = new HashSet<>();
+    @OneToMany(mappedBy = "salleR", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Reservation> reservationsS = new HashSet<>();
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
@@ -26,70 +26,70 @@ public class Salle {
             joinColumns = @JoinColumn(name = "salle_id"),
             inverseJoinColumns = @JoinColumn(name = "equipement_id")
     )
-    private Set<Equipement> equipements = new HashSet<>();
+    private Set<Equipement> equipementsS = new HashSet<>();
 
     public Salle() {
     }
 
-    public Salle(String nom, int capacite) {
-        this.nom = nom;
-        this.capacite = capacite;
+    public Salle(String nomS, int capaciteS) {
+        this.nomS = nomS;
+        this.capaciteS = capaciteS;
     }
 
-    public Long getId() {
-        return id;
+    public Long getIdS() {
+        return idS;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setIdS(Long idS) {
+        this.idS = idS;
     }
 
-    public String getNom() {
-        return nom;
+    public String getNomS() {
+        return nomS;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
+    public void setNomS(String nomS) {
+        this.nomS = nomS;
     }
 
-    public int getCapacite() {
-        return capacite;
+    public int getCapaciteS() {
+        return capaciteS;
     }
 
-    public void setCapacite(int capacite) {
-        this.capacite = capacite;
+    public void setCapaciteS(int capaciteS) {
+        this.capaciteS = capaciteS;
     }
 
-    public Set<Reservation> getReservations() {
-        return reservations;
+    public Set<Reservation> getReservationsS() {
+        return reservationsS;
     }
 
-    public void setReservations(Set<Reservation> reservations) {
-        this.reservations = reservations;
+    public void setReservationsS(Set<Reservation> reservationsS) {
+        this.reservationsS = reservationsS;
     }
 
     public void addReservation(Reservation reservation) {
-        reservations.add(reservation);
-        reservation.setSalle(this);
+        reservationsS.add(reservation);
+        reservation.setSalleR(this);
     }
 
     public void removeReservation(Reservation reservation) {
-        if (reservations.remove(reservation) && reservation.getSalle() == this) {
-            reservation.setSalle(null);
+        if (reservationsS.remove(reservation) && reservation.getSalleR() == this) {
+            reservation.setSalleR(null);
         }
     }
 
-    public Set<Equipement> getEquipements() {
-        return equipements;
+    public Set<Equipement> getEquipementsS() {
+        return equipementsS;
     }
 
-    public void setEquipements(Set<Equipement> equipements) {
-        this.equipements = equipements;
+    public void setEquipementsS(Set<Equipement> equipementsS) {
+        this.equipementsS = equipementsS;
     }
 
     public void ajouterEquipement(Equipement equipement) {
-        equipements.add(equipement);
-        equipement.getSalles().add(this);
+        equipementsS.add(equipement);
+        equipement.getSallesE().add(this);
     }
 
     public void addEquipement(Equipement equipement) {
@@ -97,7 +97,7 @@ public class Salle {
     }
 
     public void retirerEquipement(Equipement equipement) {
-        equipements.remove(equipement);
-        equipement.getSalles().remove(this);
+        equipementsS.remove(equipement);
+        equipement.getSallesE().remove(this);
     }
 }

@@ -58,20 +58,20 @@ public class EntitesTest {
             session.clear();
 
             ReservationService service = new ReservationService(session);
-            assertFalse(service.estSalleDisponible(salle.getId(), debut, debut.plusHours(1)));
-            assertFalse(service.estSalleDisponible(salle.getId(), debut.plusMinutes(15), debut.plusMinutes(45)));
-            assertFalse(service.estSalleDisponible(salle.getId(), debut.minusHours(1), debut.plusHours(2)));
-            assertTrue(service.estSalleDisponible(salle.getId(), debut.minusHours(1), debut));
-            assertTrue(service.estSalleDisponible(salle.getId(), debut.plusHours(1), debut.plusHours(2)));
-            assertTrue(service.estSalleDisponible(autreSalle.getId(), debut, debut.plusHours(1)));
+            assertFalse(service.estSalleDisponible(salle.getIdS(), debut, debut.plusHours(1)));
+            assertFalse(service.estSalleDisponible(salle.getIdS(), debut.plusMinutes(15), debut.plusMinutes(45)));
+            assertFalse(service.estSalleDisponible(salle.getIdS(), debut.minusHours(1), debut.plusHours(2)));
+            assertTrue(service.estSalleDisponible(salle.getIdS(), debut.minusHours(1), debut));
+            assertTrue(service.estSalleDisponible(salle.getIdS(), debut.plusHours(1), debut.plusHours(2)));
+            assertTrue(service.estSalleDisponible(autreSalle.getIdS(), debut, debut.plusHours(1)));
             assertThrows(IllegalArgumentException.class,
-                    () -> service.estSalleDisponible(salle.getId(), debut, debut));
+                    () -> service.estSalleDisponible(salle.getIdS(), debut, debut));
             assertThrows(IllegalArgumentException.class,
                     () -> service.estSalleDisponible(-1L, debut, debut.plusHours(1)));
-            assertEquals(reservation.getId(), service.reservationsUtilisateur(utilisateur.getId()).get(0).getId());
-            assertTrue(service.reservationsUtilisateur(autreUtilisateur.getId()).isEmpty());
+            assertEquals(reservation.getIdR(), service.reservationsUtilisateur(utilisateur.getIdU()).get(0).getIdR());
+            assertTrue(service.reservationsUtilisateur(autreUtilisateur.getIdU()).isEmpty());
             assertEquals(1, service.sallesAvecEquipement("Projecteur").size());
-            assertEquals(salle.getId(), service.sallesAvecEquipement("Projecteur").get(0).getId());
+            assertEquals(salle.getIdS(), service.sallesAvecEquipement("Projecteur").get(0).getIdS());
             assertTrue(service.sallesAvecEquipement("Tableau").isEmpty());
         }
     }
@@ -116,12 +116,12 @@ public class EntitesTest {
         }
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            session.get(Reservation.class, reservation.getId()).setDateFin(debut);
+            session.get(Reservation.class, reservation.getIdR()).setDateFinR(debut);
             assertThrows(IllegalArgumentException.class, () -> session.flush());
             session.getTransaction().rollback();
         }
         try (Session session = sessionFactory.openSession()) {
-            assertEquals(debut.plusHours(1), session.get(Reservation.class, reservation.getId()).getDateFin());
+            assertEquals(debut.plusHours(1), session.get(Reservation.class, reservation.getIdR()).getDateFinR());
         }
     }
 
@@ -131,34 +131,34 @@ public class EntitesTest {
         Salle salle = new Salle("Salle A", 20);
         LocalDateTime debut = LocalDateTime.of(2026, 10, 13, 10, 0);
         Reservation reservation = new Reservation(debut, debut.plusHours(1), utilisateur, salle);
-        utilisateur.getReservations().add(reservation);
+        utilisateur.getReservationsU().add(reservation);
 
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             session.persist(salle);
             session.persist(utilisateur);
-            salle.getReservations().add(reservation);
+            salle.getReservationsS().add(reservation);
             session.getTransaction().commit();
         }
 
-        assertNotNull(reservation.getId());
+        assertNotNull(reservation.getIdR());
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            Reservation chargee = session.get(Reservation.class, reservation.getId());
-            assertEquals(debut, chargee.getDateDebut());
-            assertEquals(debut.plusHours(1), chargee.getDateFin());
-            assertEquals("Amina", chargee.getUtilisateur().getNom());
-            assertEquals(20, chargee.getSalle().getCapacite());
-            assertTrue(chargee.getSalle().getReservations().contains(chargee));
-            chargee.getSalle().getReservations().remove(chargee);
-            assertTrue(chargee.getUtilisateur().getReservations().remove(chargee));
+            Reservation chargee = session.get(Reservation.class, reservation.getIdR());
+            assertEquals(debut, chargee.getDateDebutR());
+            assertEquals(debut.plusHours(1), chargee.getDateFinR());
+            assertEquals("Amina", chargee.getUtilisateurR().getNomU());
+            assertEquals(20, chargee.getSalleR().getCapaciteS());
+            assertTrue(chargee.getSalleR().getReservationsS().contains(chargee));
+            chargee.getSalleR().getReservationsS().remove(chargee);
+            assertTrue(chargee.getUtilisateurR().getReservationsU().remove(chargee));
             session.getTransaction().commit();
         }
 
         try (Session session = sessionFactory.openSession()) {
-            assertNull(session.get(Reservation.class, reservation.getId()));
-            assertNotNull(session.get(Utilisateur.class, utilisateur.getId()));
-            assertNotNull(session.get(Salle.class, salle.getId()));
+            assertNull(session.get(Reservation.class, reservation.getIdR()));
+            assertNotNull(session.get(Utilisateur.class, utilisateur.getIdU()));
+            assertNotNull(session.get(Salle.class, salle.getIdS()));
         }
     }
 
@@ -169,7 +169,7 @@ public class EntitesTest {
         Equipement equipement = new Equipement("Projecteur");
         salleA.ajouterEquipement(equipement);
         salleB.ajouterEquipement(equipement);
-        assertEquals(2, equipement.getSalles().size());
+        assertEquals(2, equipement.getSallesE().size());
 
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
@@ -178,8 +178,8 @@ public class EntitesTest {
             session.getTransaction().commit();
         }
 
-        assertNotNull(equipement.getId());
-        equipement.setNom("Projecteur HD");
+        assertNotNull(equipement.getIdE());
+        equipement.setNomE("Projecteur HD");
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             session.merge(salleB);
@@ -188,30 +188,30 @@ public class EntitesTest {
 
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            Equipement charge = session.get(Equipement.class, equipement.getId());
-            assertEquals("Projecteur HD", charge.getNom());
-            assertEquals(2, charge.getSalles().size());
+            Equipement charge = session.get(Equipement.class, equipement.getIdE());
+            assertEquals("Projecteur HD", charge.getNomE());
+            assertEquals(2, charge.getSallesE().size());
             assertEquals(Long.valueOf(1), session.createQuery(
                     "select count(e) from Equipement e", Long.class).getSingleResult());
-            session.remove(session.get(Salle.class, salleA.getId()));
+            session.remove(session.get(Salle.class, salleA.getIdS()));
             session.getTransaction().commit();
         }
 
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            Equipement charge = session.get(Equipement.class, equipement.getId());
+            Equipement charge = session.get(Equipement.class, equipement.getIdE());
             assertNotNull(charge);
-            assertEquals(1, charge.getSalles().size());
-            Salle restante = session.get(Salle.class, salleB.getId());
-            assertTrue(restante.getEquipements().contains(charge));
+            assertEquals(1, charge.getSallesE().size());
+            Salle restante = session.get(Salle.class, salleB.getIdS());
+            assertTrue(restante.getEquipementsS().contains(charge));
             restante.retirerEquipement(charge);
-            assertTrue(charge.getSalles().isEmpty());
+            assertTrue(charge.getSallesE().isEmpty());
             session.getTransaction().commit();
         }
 
         try (Session session = sessionFactory.openSession()) {
-            assertNotNull(session.get(Equipement.class, equipement.getId()));
-            assertTrue(session.get(Salle.class, salleB.getId()).getEquipements().isEmpty());
+            assertNotNull(session.get(Equipement.class, equipement.getIdE()));
+            assertTrue(session.get(Salle.class, salleB.getIdS()).getEquipementsS().isEmpty());
         }
     }
 
@@ -221,7 +221,7 @@ public class EntitesTest {
         Salle salle = new Salle("Salle B", 10);
         LocalDateTime debut = LocalDateTime.of(2026, 10, 13, 14, 0);
         Reservation reservation = new Reservation(debut, debut.plusHours(2), utilisateur, salle);
-        salle.getReservations().add(reservation);
+        salle.getReservationsS().add(reservation);
 
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
@@ -232,14 +232,14 @@ public class EntitesTest {
 
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            session.remove(session.get(Salle.class, salle.getId()));
+            session.remove(session.get(Salle.class, salle.getIdS()));
             session.getTransaction().commit();
         }
 
         try (Session session = sessionFactory.openSession()) {
-            assertNull(session.get(Salle.class, salle.getId()));
-            assertNull(session.get(Reservation.class, reservation.getId()));
-            assertNotNull(session.get(Utilisateur.class, utilisateur.getId()));
+            assertNull(session.get(Salle.class, salle.getIdS()));
+            assertNull(session.get(Reservation.class, reservation.getIdR()));
+            assertNotNull(session.get(Utilisateur.class, utilisateur.getIdU()));
         }
     }
 }

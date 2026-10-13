@@ -24,8 +24,8 @@ public class ReservationService {
 
         // Deux reservations peuvent se suivre, mais elles ne doivent pas se chevaucher.
         Long conflits = em.createQuery(
-                "select count(r) from Reservation r where r.salle.id = :salleId "
-                        + "and r.dateDebut < :fin and r.dateFin > :debut", Long.class)
+                "select count(r) from Reservation r where r.salleR.idS = :salleId "
+                        + "and r.dateDebutR < :fin and r.dateFinR > :debut", Long.class)
                 .setParameter("salleId", salleId)
                 .setParameter("debut", debut)
                 .setParameter("fin", fin)
@@ -35,15 +35,15 @@ public class ReservationService {
 
     public List<Reservation> reservationsUtilisateur(Long utilisateurId) {
         return em.createQuery(
-                "select r from Reservation r where r.utilisateur.id = :utilisateurId "
-                        + "order by r.dateDebut", Reservation.class)
+                "select r from Reservation r where r.utilisateurR.idU = :utilisateurId "
+                        + "order by r.dateDebutR", Reservation.class)
                 .setParameter("utilisateurId", utilisateurId)
                 .getResultList();
     }
 
     public List<Salle> sallesAvecEquipement(String nomEquipement) {
         return em.createQuery(
-                "select distinct s from Salle s join s.equipements e where e.nom = :nom", Salle.class)
+                "select distinct s from Salle s join s.equipementsS e where e.nomE = :nom", Salle.class)
                 .setParameter("nom", nomEquipement)
                 .getResultList();
     }

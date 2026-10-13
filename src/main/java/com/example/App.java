@@ -25,14 +25,14 @@ public class App {
 
             LocalDateTime debut = LocalDateTime.of(2026, 10, 13, 10, 0);
             Reservation reservation = new Reservation();
-            reservation.setDateDebut(debut);
-            reservation.setDateFin(debut.plusHours(1));
+            reservation.setDateDebutR(debut);
+            reservation.setDateFinR(debut.plusHours(1));
             user.addReservation(reservation);
             salle.addReservation(reservation);
 
             Reservation suivante = new Reservation();
-            suivante.setDateDebut(debut.plusHours(2));
-            suivante.setDateFin(debut.plusHours(3));
+            suivante.setDateDebutR(debut.plusHours(2));
+            suivante.setDateFinR(debut.plusHours(3));
             user.addReservation(suivante);
             salle.addReservation(suivante);
 
@@ -45,24 +45,24 @@ public class App {
             afficherResultats(em);
 
             ReservationService service = new ReservationService(em);
-            System.out.println("Reservations d'Alice : " + service.reservationsUtilisateur(user.getId()).size());
+            System.out.println("Reservations d'Alice : " + service.reservationsUtilisateur(user.getIdU()).size());
             for (Salle equipee : service.sallesAvecEquipement("Projecteur")) {
-                System.out.println("Salle avec un projecteur : " + equipee.getNom());
+                System.out.println("Salle avec un projecteur : " + equipee.getNomS());
             }
             System.out.println("Salle disponible de 10h a 11h : "
-                    + service.estSalleDisponible(salle.getId(), debut, debut.plusHours(1)));
+                    + service.estSalleDisponible(salle.getIdS(), debut, debut.plusHours(1)));
             System.out.println("Salle disponible de 11h a 12h : "
-                    + service.estSalleDisponible(salle.getId(), debut.plusHours(1), debut.plusHours(2)));
+                    + service.estSalleDisponible(salle.getIdS(), debut.plusHours(1), debut.plusHours(2)));
             em.clear();
 
             em.getTransaction().begin();
-            Reservation aRetirer = em.find(Reservation.class, reservation.getId());
-            aRetirer.getUtilisateur().removeReservation(aRetirer);
-            aRetirer.getSalle().removeReservation(aRetirer);
+            Reservation aRetirer = em.find(Reservation.class, reservation.getIdR());
+            aRetirer.getUtilisateurR().removeReservation(aRetirer);
+            aRetirer.getSalleR().removeReservation(aRetirer);
             em.getTransaction().commit();
             em.clear();
 
-            if (em.find(Reservation.class, reservation.getId()) != null) {
+            if (em.find(Reservation.class, reservation.getIdR()) != null) {
                 throw new IllegalStateException("La reservation orpheline existe encore.");
             }
             System.out.println("Apres retrait d'une reservation (orphanRemoval) :");
@@ -70,18 +70,18 @@ public class App {
             em.clear();
 
             em.getTransaction().begin();
-            Utilisateur aSupprimer = em.find(Utilisateur.class, user.getId());
+            Utilisateur aSupprimer = em.find(Utilisateur.class, user.getIdU());
             em.remove(aSupprimer);
             em.getTransaction().commit();
             em.clear();
 
-            if (em.find(Utilisateur.class, user.getId()) != null) {
+            if (em.find(Utilisateur.class, user.getIdU()) != null) {
                 throw new IllegalStateException("L'utilisateur existe encore.");
             }
-            if (em.find(Reservation.class, suivante.getId()) != null) {
+            if (em.find(Reservation.class, suivante.getIdR()) != null) {
                 throw new IllegalStateException("La cascade REMOVE n'a pas supprime la reservation.");
             }
-            if (em.find(Salle.class, salle.getId()) == null) {
+            if (em.find(Salle.class, salle.getIdS()) == null) {
                 throw new IllegalStateException("La salle doit etre conservee.");
             }
             System.out.println("Apres suppression de l'utilisateur (cascade REMOVE vers les reservations) :");
@@ -89,11 +89,11 @@ public class App {
             em.clear();
 
             em.getTransaction().begin();
-            em.remove(em.find(Salle.class, salle.getId()));
+            em.remove(em.find(Salle.class, salle.getIdS()));
             em.getTransaction().commit();
             em.clear();
 
-            if (em.find(Equipement.class, projecteur.getId()) == null) {
+            if (em.find(Equipement.class, projecteur.getIdE()) == null) {
                 throw new IllegalStateException("L'equipement doit etre conserve.");
             }
             System.out.println("Apres suppression de la salle :");

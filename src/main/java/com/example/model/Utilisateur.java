@@ -9,72 +9,72 @@ public class Utilisateur {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long idU;
 
     @Column(nullable = false, unique = true)
-    private String email;
+    private String emailU;
 
     @Column(nullable = false)
-    private String nom;
+    private String nomU;
 
-    @OneToMany(mappedBy = "utilisateur", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Reservation> reservations = new HashSet<>();
+    @OneToMany(mappedBy = "utilisateurR", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Reservation> reservationsU = new HashSet<>();
 
     public Utilisateur() {
     }
 
-    public Utilisateur(String email, String nom) {
-        this.email = email;
-        this.nom = nom;
+    public Utilisateur(String emailU, String nomU) {
+        this.emailU = emailU;
+        this.nomU = nomU;
     }
 
-    public Utilisateur(Long id, String email, String nom, Set<Reservation> reservations) {
-        this.id = id;
-        this.email = email;
-        this.nom = nom;
-        this.reservations = reservations;
+    public Utilisateur(Long idU, String emailU, String nomU, Set<Reservation> reservationsU) {
+        this.idU = idU;
+        this.emailU = emailU;
+        this.nomU = nomU;
+        this.reservationsU = reservationsU;
     }
 
-    public Long getId() {
-        return id;
+    public Long getIdU() {
+        return idU;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setIdU(Long idU) {
+        this.idU = idU;
     }
 
-    public String getEmail() {
-        return email;
+    public String getEmailU() {
+        return emailU;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmailU(String emailU) {
+        this.emailU = emailU;
     }
 
-    public String getNom() {
-        return nom;
+    public String getNomU() {
+        return nomU;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
+    public void setNomU(String nomU) {
+        this.nomU = nomU;
     }
 
-    public Set<Reservation> getReservations() {
-        return reservations;
+    public Set<Reservation> getReservationsU() {
+        return reservationsU;
     }
 
-    public void setReservations(Set<Reservation> reservations) {
-        this.reservations = reservations;
+    public void setReservationsU(Set<Reservation> reservationsU) {
+        this.reservationsU = reservationsU;
     }
 
     public void addReservation(Reservation reservation) {
-        reservations.add(reservation);
-        reservation.setUtilisateur(this);
+        reservationsU.add(reservation);
+        reservation.setUtilisateurR(this);
     }
 
     public void removeReservation(Reservation reservation) {
-        if (reservations.remove(reservation) && reservation.getUtilisateur() == this) {
-            reservation.setUtilisateur(null);
+        if (reservationsU.remove(reservation) && reservation.getUtilisateurR() == this) {
+            reservation.setUtilisateurR(null);
         }
     }
 }

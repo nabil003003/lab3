@@ -8,80 +8,80 @@ public class Reservation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long idR;
 
     @Column(nullable = false)
-    private LocalDateTime dateDebut;
+    private LocalDateTime dateDebutR;
 
     @Column(nullable = false)
-    private LocalDateTime dateFin;
+    private LocalDateTime dateFinR;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "utilisateur_id", nullable = false)
-    private Utilisateur utilisateur;
+    private Utilisateur utilisateurR;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "salle_id", nullable = false)
-    private Salle salle;
+    private Salle salleR;
 
     public Reservation() {
     }
 
-    public Reservation(LocalDateTime dateDebut, LocalDateTime dateFin,
-                       Utilisateur utilisateur, Salle salle) {
-        this.dateDebut = dateDebut;
-        this.dateFin = dateFin;
-        this.utilisateur = utilisateur;
-        this.salle = salle;
+    public Reservation(LocalDateTime dateDebutR, LocalDateTime dateFinR,
+                       Utilisateur utilisateurR, Salle salleR) {
+        this.dateDebutR = dateDebutR;
+        this.dateFinR = dateFinR;
+        this.utilisateurR = utilisateurR;
+        this.salleR = salleR;
     }
 
-    public Long getId() {
-        return id;
+    public Long getIdR() {
+        return idR;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setIdR(Long idR) {
+        this.idR = idR;
     }
 
-    public LocalDateTime getDateDebut() {
-        return dateDebut;
+    public LocalDateTime getDateDebutR() {
+        return dateDebutR;
     }
 
-    public void setDateDebut(LocalDateTime dateDebut) {
-        this.dateDebut = dateDebut;
+    public void setDateDebutR(LocalDateTime dateDebutR) {
+        this.dateDebutR = dateDebutR;
     }
 
-    public LocalDateTime getDateFin() {
-        return dateFin;
+    public LocalDateTime getDateFinR() {
+        return dateFinR;
     }
 
-    public void setDateFin(LocalDateTime dateFin) {
-        this.dateFin = dateFin;
+    public void setDateFinR(LocalDateTime dateFinR) {
+        this.dateFinR = dateFinR;
     }
 
-    public Utilisateur getUtilisateur() {
-        return utilisateur;
+    public Utilisateur getUtilisateurR() {
+        return utilisateurR;
     }
 
-    public void setUtilisateur(Utilisateur utilisateur) {
-        this.utilisateur = utilisateur;
+    public void setUtilisateurR(Utilisateur utilisateurR) {
+        this.utilisateurR = utilisateurR;
     }
 
-    public Salle getSalle() {
-        return salle;
+    public Salle getSalleR() {
+        return salleR;
     }
 
-    public void setSalle(Salle salle) {
-        this.salle = salle;
+    public void setSalleR(Salle salleR) {
+        this.salleR = salleR;
     }
 
     @PrePersist
     @PreUpdate
     public void verifierDates() {
-        if (dateDebut == null || dateFin == null) {
+        if (dateDebutR == null || dateFinR == null) {
             throw new IllegalArgumentException("Les dates de debut et de fin sont obligatoires.");
         }
-        if (!dateDebut.isBefore(dateFin)) {
+        if (!dateDebutR.isBefore(dateFinR)) {
             throw new IllegalArgumentException("La date de debut doit etre avant la date de fin.");
         }
     }

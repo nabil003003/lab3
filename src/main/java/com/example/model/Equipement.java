@@ -9,42 +9,42 @@ public class Equipement {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long idE;
 
     @Column(nullable = false, unique = true)
-    private String nom;
+    private String nomE;
 
-    @ManyToMany(mappedBy = "equipements")
-    private Set<Salle> salles = new HashSet<>();
+    @ManyToMany(mappedBy = "equipementsS")
+    private Set<Salle> sallesE = new HashSet<>();
 
     public Equipement() {
     }
 
-    public Equipement(String nom) {
-        this.nom = nom;
+    public Equipement(String nomE) {
+        this.nomE = nomE;
     }
 
-    public Long getId() {
-        return id;
+    public Long getIdE() {
+        return idE;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setIdE(Long idE) {
+        this.idE = idE;
     }
 
-    public String getNom() {
-        return nom;
+    public String getNomE() {
+        return nomE;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
+    public void setNomE(String nomE) {
+        this.nomE = nomE;
     }
 
-    public Set<Salle> getSalles() {
-        return salles;
+    public Set<Salle> getSallesE() {
+        return sallesE;
     }
 
-    public void setSalles(Set<Salle> salles) {
-        this.salles = salles;
+    public void setSallesE(Set<Salle> sallesE) {
+        this.sallesE = sallesE;
     }
 }
